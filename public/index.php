@@ -8,8 +8,9 @@ use Slim\Factory\ServerRequestCreatorFactory;
 session_start();
 
 /** @var App $app */
+$production = true;
 $appBuilder = include __DIR__ . '/../app/app.php';
-$app = $appBuilder();
+$app = $appBuilder($production);
 
 $callableResolver = $app->getCallableResolver();
 

@@ -5,20 +5,22 @@ use DI\ContainerBuilder;
 use Monolog\Logger;
 
 return function (ContainerBuilder $containerBuilder, $production = false) {
+    $projectRoot = dirname(__DIR__);
     $settings = [
         'displayErrorDetails' => false, // Should be set to false in production
         'logger' => [
             'name' => 'slim-app',
-            'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
+            'path' => isset($_ENV['docker']) ? 'php://stdout' : $projectRoot . '/logs/app.log',
             'level' => Logger::ERROR,
         ],
+        'cache-path' => $projectRoot . '/var/cache/',
     ];
     if (!$production) {
         $settings = array_merge($settings, [
             'displayErrorDetails' => true, // Should be set to false in production
             'logger' => [
                 'name' => 'slim-app',
-                'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
+                'path' => isset($_ENV['docker']) ? 'php://stdout' : $projectRoot . '/logs/app.log',
                 'level' => Logger::DEBUG,
             ],
         ]);
