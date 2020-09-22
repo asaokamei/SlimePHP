@@ -8,7 +8,7 @@ use Slim\Factory\ServerRequestCreatorFactory;
 session_start();
 
 /** @var App $app */
-$production = true;
+$production = false;
 $appBuilder = include __DIR__ . '/../app/app.php';
 $app = $appBuilder($production);
 

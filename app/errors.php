@@ -1,12 +1,13 @@
 <?php
 declare(strict_types=1);
 
+use Psr\Http\Message\ServerRequestInterface;
 use App\Application\Handlers\HttpErrorHandler;
 use App\Application\Handlers\ShutdownHandler;
 use App\Application\Middleware\SessionMiddleware;
 use Slim\App;
 
-return function (App $app, Psr\Http\Message\ServerRequestInterface $request) {
+return function (App $app, ServerRequestInterface $request) {
     $app->add(SessionMiddleware::class);
 
     /** @var bool $displayErrorDetails */
@@ -15,7 +16,7 @@ return function (App $app, Psr\Http\Message\ServerRequestInterface $request) {
     // Create Error Handler
     $responseFactory = $app->getResponseFactory();
     $callableResolver = $app->getCallableResolver();
-    $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory);
+    $errorHandler = new HttpErrorHandler($callableResolver, $responseFactory, $app->getContainer()->get('view'));
 
     // Create Shutdown Handler
     $shutdownHandler = new ShutdownHandler($request, $errorHandler, $displayErrorDetails);

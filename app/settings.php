@@ -7,6 +7,7 @@ use Monolog\Logger;
 return function (ContainerBuilder $containerBuilder, $production = false) {
     $projectRoot = dirname(__DIR__);
     $settings = [
+        'production' => $production,
         'displayErrorDetails' => false, // Should be set to false in production
         'logger' => [
             'name' => 'slim-app',

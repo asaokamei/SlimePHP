@@ -33,7 +33,11 @@ return function (ContainerBuilder $containerBuilder) {
          */
         'view' => function(ContainerInterface $c) {
             $settings = $c->get('settings');
-            return Twig::create(__DIR__ . '/templates', ['cache' => $settings['cache-path'].'/twig']);
+            return Twig::create(__DIR__ . '/templates', [
+                'cache' => $settings['cache-path'].'/twig',
+                'auto_reload' => true,
+            ]);
         },
+        Twig::class => DI\get('view'),
     ]);
 };
