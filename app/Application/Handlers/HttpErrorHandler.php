@@ -5,6 +5,7 @@ namespace App\Application\Handlers;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Exception\HttpException;
 use Slim\Handlers\ErrorHandler;
 use Slim\Interfaces\CallableResolverInterface;
 use Slim\Views\Twig;
@@ -39,9 +40,12 @@ class HttpErrorHandler extends ErrorHandler
             ? "{$exception->getFile()} @ {$exception->getLine()}
             {$exception->getTraceAsString()}"
             : null;
+        $title = $exception instanceof HttpException
+            ? $exception->getTitle()
+            : get_class($exception);
         try {
             return $this->twig->render($response, 'error.twig', [
-                'title' => $exception->getTitle(),
+                'title' => $title,
                 'detail' => $detail,
             ]);
         } catch (Throwable $e) {
