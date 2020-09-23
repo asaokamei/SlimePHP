@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use App\Actions\Forms\FormAction;
+use App\Controllers\Forms\FormController;
 use App\Application\Actions\User\ListUsersAction;
 use App\Application\Actions\User\ViewUserAction;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -19,5 +19,5 @@ return function (App $app) {
         $group->get('/{id}', ViewUserAction::class);
     });
 
-    $app->any('/form', FormAction::class);
+    $app->any('/form', FormController::class);
 };

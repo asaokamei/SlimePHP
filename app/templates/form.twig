@@ -2,4 +2,15 @@
 
 <p>This is form sample...</p>
 
-{{ form(form) }}
+{{ form_start(form) }}
+{{ form_widget(form) }}
+<input type="hidden" name="_csrf_name" value="{{ csrf[0] }}">
+<input type="hidden" name="_csrf_value" value="{{ csrf[1] }}">
+{{ form_end(form) }}
+
+{% if data is defined %}
+    <h2>form submitted...</h2>
+    {% for key, val in data %}
+        {{ key }}: {{ val }}<br>
+    {% endfor %}
+{% endif %}

@@ -11,9 +11,10 @@ return function (App $app) {
     $responseFactory = $app->getResponseFactory();
 
     // Register Middleware To Be Executed On All Routes
+    $storage = null;
     $app->add(new Guard($responseFactory,
-        'csrf',
-        $_SESSION,
+        '_csrf',
+        $storage,
         null,
         200,
         16,

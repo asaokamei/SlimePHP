@@ -1,19 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Actions;
+namespace App\Controllers;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Exception\HttpBadRequestException;
+use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Views\Twig;
 use Symfony\Component\Form\FormFactoryInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-abstract class AbstractAction
+abstract class AbstractController
 {
     /**
      * @var LoggerInterface
@@ -58,11 +59,11 @@ abstract class AbstractAction
     }
 
     /**
-     * @param ServerRequestInterface  $request
+     * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @param array    $args
+     * @param array $args
      * @return ResponseInterface
-     * @throws HttpBadRequestException
+     * @throws HttpMethodNotAllowedException
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface
     {
@@ -70,14 +71,12 @@ abstract class AbstractAction
         $this->response = $response;
         $this->args = $args;
 
-        return $this->action();
+        $method = 'on' . ($request->getAttribute('_method') ?? $request->getMethod());
+        if (method_exists($this, $method)) {
+            return $this->$method();
+        }
+        throw new HttpMethodNotAllowedException($request);
     }
-
-    /**
-     * @return ResponseInterface
-     * @throws HttpBadRequestException
-     */
-    abstract protected function action(): ResponseInterface;
 
     /**
      * @param string $template
@@ -95,6 +94,16 @@ abstract class AbstractAction
     protected function form(): FormFactoryInterface
     {
         return $this->formFactory;
+    }
+
+    protected function csrfTokenName(): string
+    {
+        return $this->request->getAttribute('_csrf_name');
+    }
+
+    protected function csrfTokenValue(): string
+    {
+        return $this->request->getAttribute('_csrf_value');
     }
 
     /**

@@ -42,7 +42,7 @@ return function (ContainerBuilder $containerBuilder) {
         /**
          * view/Twig
          */
-        'view' => function (ContainerInterface $c) {
+        Twig::class => function (ContainerInterface $c) {
             // here's settings.
             $settings = $c->get('settings');
 
@@ -74,12 +74,12 @@ return function (ContainerBuilder $containerBuilder) {
             $twig->addExtension(new TranslationExtension($c->get('translator')));
             return $twig;
         },
-        Twig::class => DI\get('view'),
+        'view' => DI\get(Twig::class),
 
         /**
          * forms/Symfony Forms
          */
-        'forms' => function () {
+        FormFactoryInterface::class => function () {
 
             // creates the validator - details will vary
             $validator = Validation::createValidator();
@@ -88,7 +88,7 @@ return function (ContainerBuilder $containerBuilder) {
                 ->addExtension(new ValidatorExtension($validator))
                 ->getFormFactory();
         },
-        FormFactoryInterface::class => DI\get('forms'),
+        'forms' => DI\get(FormFactoryInterface::class),
 
         /**
          * translator/Symfony's Translator
